@@ -1,0 +1,27 @@
+# secrets & local config
+.env
+*.local.sh
+setup/facilitator/participants.txt
+
+# generated projects / outputs
+bridge-agent/telix-target-intel/
+telix-literature-agent/
+reports/
+.licenses/
+summary_task1.md
+deployment_metadata.json
+
+# python / uv
+__pycache__/
+*.pyc
+.venv/
+uv.lock
+
+# editors / OS
+.vscode/
+.idea/
+.DS_Store
+
+# participant package
+telix-antigravity-workshop.zip
+!participant-folder/reports/
