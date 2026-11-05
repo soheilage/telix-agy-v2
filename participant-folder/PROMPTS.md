@@ -31,12 +31,11 @@ Save your summary as reports/module1_her2_target.md and list the science skills 
 ### 2.1 Requirements interview & plan formulation
 
 ```text
-I want to perform a candidate developability and structural binding check for the antibody trastuzumab targeting HER2 (P04626).
-Before executing any tools, interview me with 3 multiple-choice questions, one at a time, to confirm:
+/plan I want to perform a candidate developability and structural binding check for the antibody trastuzumab targeting HER2 (P04626).
+/grill-me first with 3 questions, one at a time, to align on:
 1. The structural complex source to analyze (experimental PDB structure vs. predictive model).
 2. The key sequence liabilities of interest (deamidation, isomerization, oxidation, free cysteines).
 3. The preferred format for the resulting summary report.
-After I answer all three questions, formulate a structured execution plan and wait for my approval.
 ```
 
 ### 2.2 Approve the plan
