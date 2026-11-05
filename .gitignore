@@ -5,6 +5,7 @@ setup/facilitator/participants.txt
 
 # generated projects / outputs
 bridge-agent/telix-target-intel/
+bridge-agent/telix-antibody-first-pass/
 telix-literature-agent/
 reports/
 .licenses/
