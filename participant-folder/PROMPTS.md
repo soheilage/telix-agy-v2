@@ -28,17 +28,22 @@ Save your summary as reports/module1_her2_target.md and list the science skills 
 
 ## Module 2 — Plan Before Acting
 
-### 2.1 Requirements interview & plan formulation
+### 2.1 The alignment interview (/grill-me)
 
 ```text
-/plan I want to perform a candidate developability and structural binding check for the antibody trastuzumab targeting HER2 (P04626).
-/grill-me first with 3 questions, one at a time, to align on:
+/grill-me I want to perform a candidate developability and structural binding check for the antibody trastuzumab targeting HER2 (P04626). Ask me 3 questions, one at a time, to align on:
 1. The structural complex source to analyze (experimental PDB structure vs. predictive model).
 2. The key sequence liabilities of interest (deamidation, isomerization, oxidation, free cysteines).
 3. The preferred format for the resulting summary report.
 ```
 
-### 2.2 Approve the plan
+### 2.2 Generate the plan (/plan)
+
+```text
+/plan Generate the execution plan based on our agreed criteria and wait for my approval before executing.
+```
+
+### 2.3 Approve the plan
 
 ```text
 Proceed with the plan.
