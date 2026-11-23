@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Build the Telix Antibody First-Pass Agent:
+# Build the Telix Target Intelligence Agent:
 #   1. scaffold an ADK project with agents-cli (Agent Runtime target, EU region)
 #   2. overlay our agent.py / tools.py / science_skills_runner.py
 #   3. vendor google-deepmind/science-skills into app/science_skills/
@@ -46,7 +46,7 @@ else
   rm -rf app/science_skills/.git
 fi
 # keep only the skills we ship (smaller image); comment out to ship all
-KEEP=(uniprot_database alphafold_database_fetch_and_analyze pdb_database uv credentials)
+KEEP=(uniprot_database alphafold_database_fetch_and_analyze pdb_database gtex_database human_protein_atlas_database uv credentials)
 for d in app/science_skills/skills/*/; do
   n="$(basename "$d")"
   keep=0; for k in "${KEEP[@]}"; do [[ "$n" == "$k" ]] && keep=1; done
@@ -99,9 +99,9 @@ fi
 agents-cli install
 uv add google-cloud-logging >/dev/null 2>&1 || true
 
-echo "== Local smoke test (antibody analysis via the agent)"
+echo "== Local smoke test (target profile exercising all six tools)"
 set -a; source app/.env; set +a
-agents-cli run "Summarize the binding interface and developability liabilities for the antibody in PDB 1N8Z targeting HER2, then list the Science Skills used." || {
+agents-cli run "Profile HER2 (gene ERBB2, UniProt P04626) as a radioligand target: function and cellular location, normal-tissue RNA expression (GTEx), protein expression and subcellular location (Human Protein Atlas), AlphaFold structural confidence, and the binding interface and developability liabilities of the antibody in PDB 1N8Z. Then list the Science Skills used." || {
   echo "Smoke test failed — inspect the output above (common causes: ADC not set, model/region, egress)."; exit 1; }
 
 echo

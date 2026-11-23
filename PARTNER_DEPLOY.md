@@ -1,13 +1,18 @@
-# Partner Deployment Runbook — Telix Antibody First-Pass Agent
+# Partner Deployment Runbook — Telix Target Intelligence Agent
 
 **Audience:** the partner engineer preparing the Telix Google Cloud project for the *Agentic AI with Google
 Antigravity* workshop. Follow this file top to bottom from the **repository root**; it uses only
 `setup/facilitator/` and `bridge-agent/`.
 
 **Outcome when you are done:** in the Telix Gemini Enterprise app, the **Agents** tab shows
-*Telix Antibody First-Pass*, and it answers the test question in step 7 with a *"Science Skills used"* footer.
+*Telix Target Intelligence*, and it answers the test question in step 7 with a *"Science Skills used"* footer.
 
 Estimated hands-on time: **60–90 minutes** (most of it waiting for the build and the deploy).
+
+> **Versions.** This branch (`main`) holds the upgraded agent (six tools: UniProt, GTEx, Human Protein Atlas, AlphaFold DB, RCSB PDB, antibody-complex analysis): **Telix Target Intelligence** (`telix-target-intel`).
+> Branch `antibody-first-pass-v1` holds the initial agent: **Telix Antibody First-Pass** (`telix-antibody-first-pass`).
+> The two agents are separate Agent Runtime instances and separate Gemini Enterprise registrations, so
+> deploying one **adds** an agent and does not replace the other. Both can run in the same project.
 
 ## What you will use
 
@@ -21,7 +26,7 @@ Estimated hands-on time: **60–90 minutes** (most of it waiting for the build a
 ## What the agent is
 
 An **ADK** (Agent Development Kit) agent running on **Vertex AI Agent Runtime** in `europe-west4`. Its tools call
-the open-source **DeepMind Science Skills** scripts (UniProt, AlphaFold DB, RCSB PDB), which are vendored into
+the open-source **DeepMind Science Skills** scripts (UniProt, GTEx, Human Protein Atlas, AlphaFold DB, RCSB PDB), which are vendored into
 the container at build time. Model inference uses `gemini-3.8-flash` on the **EU jurisdictional endpoint**
 (`location=eu`). The agent is registered in the Telix **Gemini Enterprise** app (location `eu`) so workshop
 participants can chat with it without an IDE.
@@ -178,7 +183,7 @@ If you passed `--no-wait`, check progress with `cd telix-target-intel && agents-
 ./publish.sh
 ```
 
-Registers the deployed agent in the GE app (registration type `adk`, display name *Telix Antibody First-Pass*).
+Registers the deployed agent in the GE app (registration type `adk`, display name *Telix Target Intelligence*).
 Re-running updates the existing registration. Success looks like `PUBLISH OK`.
 
 ## Step 7 — Test and hand over (10 min)
@@ -190,18 +195,20 @@ Re-running updates the existing registration. Success looks like `PUBLISH OK`.
 ```
 
 Runs the demo question locally **and** against the deployed Agent Runtime, printing the tool calls it made
-(expect `uniprot_entry`, `alphafold_prediction_metrics`, `pdb_structure_info`, `antibody_complex_analysis`)
+(expect all six: `uniprot_entry`, `gtex_tissue_expression`, `hpa_protein_expression`,
+`alphafold_prediction_metrics`, `pdb_structure_info`, `antibody_complex_analysis`, each followed by
+`-> success`)
 and the final answer.
 
 ### 7.2 In Gemini Enterprise (what participants will see)
 
 1. Open the GE app URL (Cloud Console → Gemini Enterprise → Apps → the Telix app → *Open*).
-2. **New chat → Agents tab → select *Telix Antibody First-Pass*.**
+2. **New chat → Agents tab → select *Telix Target Intelligence*.**
 3. Ask:
 
-> Summarize the binding interface and developability liabilities for the antibody in PDB 1N8Z targeting HER2. Include key contact regions and chelator conjugation considerations.
+> Profile HER2 (gene ERBB2, UniProt P04626) as a radioligand target: function and cellular location, normal-tissue RNA expression (GTEx), protein expression and subcellular location (Human Protein Atlas), AlphaFold structural confidence, and the binding interface and developability liabilities of the antibody in PDB 1N8Z.
 
-4. Expect an answer in 1–2 minutes with sections for target summary, complex structure, CDR definitions,
+4. Expect an answer in 1–2 minutes with sections for target summary, normal-tissue RNA and protein expression, complex structure, CDR definitions,
    binding interface contact residues, developability liabilities, and a *"Science Skills used"* footer.
    **Take a screenshot** — the facilitator keeps it as a backup for the live demo.
 
@@ -209,7 +216,7 @@ and the final answer.
 
 Send the facilitator:
 
-- The GE app URL and confirmation that *Telix Antibody First-Pass* is visible in the Agents tab
+- The GE app URL and confirmation that *Telix Target Intelligence* is visible in the Agents tab
 - The screenshot from 7.2
 - The `05_verify.sh` output (all green)
 - The quota check result from step 8
@@ -258,6 +265,8 @@ than 200 to the facilitator.
 | `05_verify.sh`: model probe `404` on `eu` | Gemini 3.x is only on `eu` / `global`; a 404 on `eu` means the model name is wrong or the API is not enabled. Never switch to `global` (breaks EU residency) |
 | `build.sh`: *missing required tool* | Install per step 0.3; `export PATH="$HOME/.local/bin:$PATH"` |
 | `build.sh`: *uv.lock still references a private index* | Your `uv` config points at a private PyPI mirror; remove `~/.config/uv/uv.toml` or set `UV_NO_CONFIG=1`, re-run |
+| `build.sh`: *Local server did not start within 30s* then *Smoke test failed* | First start on a fresh environment is slow. The build itself is complete: run `./smoke_test.sh` to repeat the test, then continue with `./deploy.sh` |
+| `deploy.sh` prints *Updating agent* instead of creating one | An Agent Runtime instance with the same name (`AGENT_PROJECT`) already exists in the project and is updated in place, with no rollback. To keep the existing one, set a different `AGENT_PROJECT` in `.env` before `./build.sh` |
 | `deploy.sh`: *Service account …-compute@… does not exist* | `compute.googleapis.com` was enabled seconds ago; wait 1 min, re-run `03_service_agents.sh`, then `deploy.sh` |
 | `deploy.sh`: timeout / build error | Open the Cloud Build / Agent Runtime log link printed by `agents-cli`; `agents-cli deploy --status` |
 | Deployed agent returns `401` from `aiplatform.eu.rep.googleapis.com` | Deployed with agent identity by mistake; re-run `./deploy.sh` (it uses `--no-agent-identity`) |

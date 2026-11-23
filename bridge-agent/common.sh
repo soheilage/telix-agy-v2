@@ -15,9 +15,9 @@ fi
 : "${STAGING_BUCKET:=gs://${PROJECT_ID}-adk-staging}"
 : "${GE_LOCATION:=eu}"
 : "${GE_APP_ID:=telix-gemini-enterprise}"
-: "${AGENT_PROJECT:=telix-antibody-first-pass}"
-: "${DISPLAY_NAME:=Telix Antibody First-Pass}"
-: "${DESCRIPTION:=Antibody-antigen complex analysis, target biology, and developability check grounded in DeepMind Science Skills}"
+: "${AGENT_PROJECT:=telix-target-intel}"
+: "${DISPLAY_NAME:=Telix Target Intelligence}"
+: "${DESCRIPTION:=Target biology, normal-tissue RNA and protein expression, structural confidence, and antibody-complex analysis grounded in DeepMind Science Skills}"
 
 need() { command -v "$1" >/dev/null 2>&1 || { echo "missing required tool: $1"; exit 1; }; }
 

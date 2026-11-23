@@ -7,7 +7,7 @@ export PATH="$HOME/.local/bin:$PATH"
 cd "${HERE}/${AGENT_PROJECT}" || { echo "Run ./build.sh first"; exit 1; }
 set -a; source app/.env; set +a
 
-Q="${1:-Summarize the binding interface and developability liabilities for the antibody in PDB 1N8Z targeting HER2. Include key contact regions and chelator conjugation considerations.}"
+Q="${1:-Profile HER2 (gene ERBB2, UniProt P04626) as a radioligand target: function and cellular location, normal-tissue RNA expression (GTEx), protein expression and subcellular location (Human Protein Atlas), AlphaFold structural confidence, and the binding interface and developability liabilities of the antibody in PDB 1N8Z.}"
 
 echo "== LOCAL: agents-cli run"
 agents-cli run "${Q}"

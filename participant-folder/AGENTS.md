@@ -14,7 +14,7 @@ These rules apply to every agent conversation opened in this folder.
 - Multi-database tasks may take several minutes; keep going and report progress briefly.
 
 ## Google Cloud (EU data residency)
-- The deployed *Telix Antibody First-Pass* agent (Module 4) runs in `europe-west4` with Gemini inference at
+- The deployed *Telix Target Intelligence* agent (Module 4) runs in `europe-west4` with Gemini inference at
   location `eu` (`gemini-3.8-flash`). **Never use `global`.** This is managed by the facilitator; nothing in this
   folder deploys to or calls Google Cloud directly.
 

@@ -17,7 +17,7 @@ agents-cli publish gemini-enterprise \
   --project-number "${PROJECT_NUMBER}" \
   --display-name "${DISPLAY_NAME}" \
   --description "${DESCRIPTION}" \
-  --tool-description "Evaluates antibody-antigen complexes and target biology: UniProt functional summaries, AlphaFold structural confidence, PDB complexes, CDR binding contacts, and developability liabilities." \
+  --tool-description "Profiles targets and antibody-antigen complexes: UniProt functional summaries, GTEx normal-tissue RNA expression, Human Protein Atlas protein expression and localisation, AlphaFold structural confidence, PDB complexes, CDR binding contacts, and developability liabilities." \
   "$@"
 
 echo

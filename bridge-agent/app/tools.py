@@ -1,9 +1,9 @@
 # Copyright 2026 Google LLC
 # Licensed under the Apache License, Version 2.0.
-"""ADK function tools for the Telix Antibody First-Pass Agent.
+"""ADK function tools for the Telix Target Intelligence Agent.
 
-Wraps DeepMind Science Skills (UniProt, AlphaFold DB, RCSB PDB) to provide
-verified facts about target biology, structural confidence, and antibody binding complexes.
+Wraps DeepMind Science Skills (UniProt, GTEx, Human Protein Atlas, AlphaFold DB, RCSB PDB) to provide
+verified facts about target biology, tissue expression, structural confidence, and antibody binding complexes.
 """
 
 from __future__ import annotations
@@ -241,9 +241,59 @@ def antibody_complex_analysis(pdb_id: str) -> dict[str, Any]:
     return pdb_structure_info(clean_id)
 
 
+def gtex_tissue_expression(gene_symbol: str, top_n: int = 10) -> dict[str, Any]:
+    """Rank normal (non-diseased) human tissues by median RNA expression (TPM) of a gene in GTEx.
+
+    Args:
+        gene_symbol: HGNC gene symbol, e.g. 'ERBB2' (HER2), 'CA9' (CAIX), or 'FOLH1' (PSMA).
+        top_n: Number of top-expressing tissues to return.
+    """
+    res = ss.run_script("gtex_database", "gtex_cli.py", ["resolve-gencode-id", gene_symbol])
+    gencode_id = res["data"].get("gencode_id") if isinstance(res.get("data"), dict) else None
+    if res["status"] != "success" or not gencode_id:
+        return res
+    out = ss.run_script(
+        "gtex_database", "gtex_cli.py", ["get-top-expressed-tissues", gencode_id, "--n", str(top_n)]
+    )
+    out["gene_symbol"] = gene_symbol
+    out["gencode_id"] = gencode_id
+    out["source"] = "https://gtexportal.org/"
+    out["license_notice"] = "Data from the GTEx Portal — review the GTEx terms of use."
+    return out
+
+
+def hpa_protein_expression(gene_symbol: str) -> dict[str, Any]:
+    """Get protein-level tissue expression (IHC) and subcellular location from the Human Protein Atlas.
+
+    Args:
+        gene_symbol: HGNC gene symbol, e.g. 'ERBB2' (HER2), 'CA9' (CAIX), or 'FOLH1' (PSMA).
+    """
+    skill, script = "human_protein_atlas_database", "hpa_cli.py"
+    res = ss.run_script(skill, script, ["resolve-ensembl-id", gene_symbol])
+    ensembl_id = res["data"].get("ensembl_id") if isinstance(res.get("data"), dict) else None
+    if res["status"] != "success" or not ensembl_id:
+        return res
+    tissue = ss.run_script(skill, script, ["get-tissue-expression", ensembl_id])
+    location = ss.run_script(skill, script, ["get-subcellular-location", ensembl_id])
+    ok = tissue["status"] == "success" and location["status"] == "success"
+    return {
+        "status": "success" if ok else "error",
+        "skill": skill,
+        "gene_symbol": gene_symbol,
+        "ensembl_id": ensembl_id,
+        "tissue_expression": tissue.get("data"),
+        "subcellular_location": location.get("data"),
+        "error": "" if ok else (tissue.get("stderr") or location.get("stderr") or "HPA query failed"),
+        "source": f"https://www.proteinatlas.org/{ensembl_id}",
+        "license_notice": "Data from the Human Protein Atlas — review the HPA licence.",
+    }
+
+
 ALL_TOOLS = [
     uniprot_entry,
     alphafold_prediction_metrics,
     pdb_structure_info,
     antibody_complex_analysis,
+    gtex_tissue_expression,
+    hpa_protein_expression,
 ]

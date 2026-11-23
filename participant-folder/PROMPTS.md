@@ -92,8 +92,8 @@ Compare your answer with the verified data in reports/module3_antibody_binding.m
 
 ## Module 4 — Test in Gemini Enterprise
 
-In the Gemini Enterprise app, open **New chat → Agents tab → select *Telix Antibody First-Pass*** and ask:
+In the Gemini Enterprise app, open **New chat → Agents tab → select *Telix Target Intelligence*** and ask:
 
 ```text
-Summarize the binding interface and developability liabilities for the antibody in PDB 1N8Z targeting HER2. Include key contact regions and chelator conjugation considerations.
+Profile HER2 (gene ERBB2, UniProt P04626) as a radioligand target: function and cellular location, normal-tissue RNA expression (GTEx), protein expression and subcellular location (Human Protein Atlas), AlphaFold structural confidence, and the binding interface and developability liabilities of the antibody in PDB 1N8Z.
 ```
