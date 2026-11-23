@@ -15,6 +15,23 @@ biologics and radiopharmaceutical discovery:
 
 ---
 
+## Deploy the agent (Telix Antibody First-Pass)
+
+> **Versions.** This branch (`antibody-first-pass-v1`) holds the initial agent (four tools: UniProt, AlphaFold DB, RCSB PDB, antibody-complex analysis): **Telix Antibody First-Pass** (`telix-antibody-first-pass`).
+> Branch `main` holds the upgraded agent, which adds GTEx and Human Protein Atlas: **Telix Target Intelligence** (`telix-target-intel`).
+> The two agents are separate Agent Runtime instances and separate Gemini Enterprise registrations, so
+> deploying one **adds** an agent and does not replace the other. Both can run in the same project.
+
+Partner engineers: follow [`PARTNER_DEPLOY.md`](PARTNER_DEPLOY.md) top to bottom. In short, from `bridge-agent/`:
+
+```bash
+cp .env.example .env   # set PROJECT_ID and GE_APP_ID
+./build.sh             # scaffolds telix-antibody-first-pass/, vendors the Science Skills, runs a local smoke test
+./deploy.sh            # deploys to Vertex AI Agent Runtime (europe-west4)
+./publish.sh           # registers "Telix Antibody First-Pass" in the Gemini Enterprise app
+./smoke_test.sh        # local + remote test, prints the tool calls
+```
+
 ## Agenda (85 min)
 
 | # | Module | Time | Focus |

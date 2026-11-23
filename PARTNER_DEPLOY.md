@@ -9,6 +9,11 @@ Antigravity* workshop. Follow this file top to bottom from the **repository root
 
 Estimated hands-on time: **60–90 minutes** (most of it waiting for the build and the deploy).
 
+> **Versions.** This branch (`antibody-first-pass-v1`) holds the initial agent (four tools: UniProt, AlphaFold DB, RCSB PDB, antibody-complex analysis): **Telix Antibody First-Pass** (`telix-antibody-first-pass`).
+> Branch `main` holds the upgraded agent, which adds GTEx and Human Protein Atlas: **Telix Target Intelligence** (`telix-target-intel`).
+> The two agents are separate Agent Runtime instances and separate Gemini Enterprise registrations, so
+> deploying one **adds** an agent and does not replace the other. Both can run in the same project.
+
 ## What you will use
 
 | Path | Purpose |
@@ -148,13 +153,13 @@ Leave the rest at their defaults (`REGION=europe-west4`, `MODEL_LOCATION=eu`, `G
 ./build.sh
 ```
 
-What it does: scaffolds an ADK project `telix-target-intel/` with `agents-cli`, overlays `app/agent.py`,
+What it does: scaffolds an ADK project `telix-antibody-first-pass/` with `agents-cli`, overlays `app/agent.py`,
 `app/tools.py`, `app/science_skills_runner.py`, clones the Science Skills into `app/science_skills/`, patches
 the Dockerfile so the container has `uv`, writes `app/.env`, locks dependencies against public PyPI, and runs
 **a local smoke test** (`agents-cli run` with the demo question).
 
 Success looks like: a printed answer about CAIX that ends with the Science Skills it used. If the local run
-fails, check `telix-target-intel/app/.env` and that `gcloud auth application-default login` was done.
+fails, check `telix-antibody-first-pass/app/.env` and that `gcloud auth application-default login` was done.
 
 ## Step 5 — Deploy to Agent Runtime (5–10 min)
 
@@ -170,7 +175,7 @@ principal with `401 UNAUTHENTICATED`. Running as the project compute service acc
 grants it the needed roles. Do not change this.
 
 Success looks like: `deployment_metadata.json` printed with a `remote_agent_runtime_id`, then `DEPLOY OK`.
-If you passed `--no-wait`, check progress with `cd telix-target-intel && agents-cli deploy --status`.
+If you passed `--no-wait`, check progress with `cd telix-antibody-first-pass && agents-cli deploy --status`.
 
 ## Step 6 — Publish to Gemini Enterprise (1 min)
 
@@ -213,7 +218,7 @@ Send the facilitator:
 - The screenshot from 7.2
 - The `05_verify.sh` output (all green)
 - The quota check result from step 8
-- `telix-target-intel/deployment_metadata.json` (contains the Agent Runtime resource name)
+- `telix-antibody-first-pass/deployment_metadata.json` (contains the Agent Runtime resource name)
 
 ## Step 8 — Quota check (5 min)
 
@@ -263,7 +268,7 @@ than 200 to the facilitator.
 | Deployed agent returns `401` from `aiplatform.eu.rep.googleapis.com` | Deployed with agent identity by mistake; re-run `./deploy.sh` (it uses `--no-agent-identity`) |
 | `publish.sh`: *lists no apps* / permission error | App not in `eu`, or your account lacks `discoveryengine.admin` |
 | GE chat returns 403 when calling the agent | Discovery Engine service agent missing `roles/aiplatform.user` → `./03_service_agents.sh` |
-| GE answer has no *"Science Skills used"* footer | The chat is using another agent — New chat → Agents → select *Telix Target Intelligence* |
+| GE answer has no *"Science Skills used"* footer | The chat is using another agent — New chat → Agents → select *Telix Antibody First-Pass* |
 | Tool calls fail inside the container (SSL / connection refused) | Egress restriction on the project (step 0.4) |
 
 More in [`FACILITATOR_GUIDE.md`](FACILITATOR_GUIDE.md) §9.
@@ -273,7 +278,7 @@ More in [`FACILITATOR_GUIDE.md`](FACILITATOR_GUIDE.md) §9.
 ```bash
 cd bridge-agent
 # code change in app/ → rebuild overlay and redeploy
-rm -rf telix-target-intel && ./build.sh && ./deploy.sh && ./publish.sh
+rm -rf telix-antibody-first-pass && ./build.sh && ./deploy.sh && ./publish.sh
 ```
 
 ## Data-residency summary (for Telix governance questions)

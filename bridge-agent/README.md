@@ -19,6 +19,11 @@ bridge-agent/
 └── .env.example
 ```
 
+> **Versions.** This branch (`antibody-first-pass-v1`) holds the initial agent (four tools: UniProt, AlphaFold DB, RCSB PDB, antibody-complex analysis): **Telix Antibody First-Pass** (`telix-antibody-first-pass`).
+> Branch `main` holds the upgraded agent, which adds GTEx and Human Protein Atlas: **Telix Target Intelligence** (`telix-target-intel`).
+> The two agents are separate Agent Runtime instances and separate Gemini Enterprise registrations, so
+> deploying one **adds** an agent and does not replace the other. Both can run in the same project.
+
 ## How it works
 
 ```mermaid
